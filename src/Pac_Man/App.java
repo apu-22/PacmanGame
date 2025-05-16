@@ -11,10 +11,14 @@ public class App {
         int Height=rowConut*tilesize;
 
         JFrame window = new JFrame("Pac Man");
-        window.setVisible(true);
         window.setSize(Width,Height);
         window.setLocationRelativeTo(null);
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        PacMan pacmanGame = new PacMan();
+        window.add(pacmanGame);
+        window.pack();
+        window.setVisible(true);
     }
 }
