@@ -249,6 +249,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
          for(Block ghost : ghosts){
              if (collision(ghost, pacman)){
                 lives -= 1;
+                if (lives == 0){
+                    gameOver = true;
+                    return;
+                }
                 resetPosition();
              }
 
@@ -289,6 +293,9 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e){ // // গেম আপডেট বা repaint করার জন্য ব্যবহার হয়
         move();
         repaint();
+        if (gameOver){
+            gameLoap.stop();
+        }
     }
 
     public void resetPosition(){
@@ -310,7 +317,14 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
-//        System.out.println("KeyEvent: " + e.getKeyCode());
+        if (gameOver){
+            loadMap();
+            resetPosition();
+            lives = 3;
+            score = 0;
+            gameOver = false;
+            gameLoap.start();
+        }
         if(e.getKeyCode() == KeyEvent.VK_UP){
             pacman.updateDirection('U');
         }
