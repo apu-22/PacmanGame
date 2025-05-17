@@ -69,6 +69,11 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             }
 
         }
+
+        void reset(){
+            this.x = this.startX;
+            this.y = this.startY;
+        }
     }
     private int rowCount = 21;
     private int columnCount = 19;
@@ -242,6 +247,11 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
          //check ghost collision
          for(Block ghost : ghosts){
+             if (collision(ghost, pacman)){
+                lives -= 1;
+                resetPosition();
+             }
+
              if (ghost.y == tileSize*9 && ghost.direction != 'U' && ghost.direction != 'D'){
                  ghost.updateDirection('U');
              }
@@ -279,6 +289,17 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e){ // // গেম আপডেট বা repaint করার জন্য ব্যবহার হয়
         move();
         repaint();
+    }
+
+    public void resetPosition(){
+        pacman.reset();
+        pacman.velocityX = 0;
+        pacman.velocityY = 0;
+        for (Block ghost : ghosts){
+            ghost.reset();
+            char newDirection = direction[random.nextInt(4)];
+            ghost.updateDirection(newDirection);
+        }
     }
 
     @Override
