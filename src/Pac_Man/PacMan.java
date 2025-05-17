@@ -114,12 +114,15 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     };
 
 
+
     HashSet<Block> walls;
     HashSet<Block> foods;
     HashSet<Block> ghosts;
     Block pacman;
 
     Timer gameLoap;
+    char[] direction = {'U', 'D', 'L', 'R'};
+    Random random = new Random();
 
 
     public PacMan() {
@@ -142,6 +145,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         pacmanLeft = ImageLoader.load("/picture/pacmanLeft.png");
 
         loadMap();
+        for(Block ghost : ghosts){
+            char newDirection = direction[random.nextInt(4)];
+            ghost.updateDirection(newDirection);
+        }
         //how long it takes to start. milliseconds gone between frames
         gameLoap = new Timer(50,this);
         gameLoap.start();
@@ -218,6 +225,23 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                  pacman.x -=pacman.velocityX;
                  pacman.y -= pacman.velocityY;
                  break;
+             }
+         }
+
+         //check ghost collision
+         for(Block ghost : ghosts){
+             if (ghost.y == tileSize*9 && ghost.direction != 'U' && ghost.direction != 'D'){
+                 ghost.updateDirection('U');
+             }
+             ghost.x += ghost.velocityX;
+             ghost.y += ghost.velocityY;
+             for (Block wall : walls){
+                 if (collision(ghost, wall) || ghost.x <= 0 || ghost.x + ghost.width >= Width){
+                     ghost.x -= ghost.velocityX;
+                     ghost.y -= ghost.velocityY;
+                     char newDirection = direction[random.nextInt(4)];
+                     ghost.updateDirection(newDirection);
+                 }
              }
          }
      }
