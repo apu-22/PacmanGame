@@ -21,7 +21,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         int startY;
         char direction = 'U';
         int velocityX=0;
-        int getVelocityY=0;
+        int velocityY=0;
 
         Block(Image image, int x,int y,int width,int height){
             this.x=x;
@@ -35,32 +35,44 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
         }
         void updateDirection(char direction){
+            char prevDirection = this.direction;
             this.direction=direction;
             updateVelocity();
+            this.x += this.velocityX;
+            this.y += this.velocityY;
+            for(Block wall : walls){
+                if(collision(this, wall)){
+                    this.x -= this.velocityX;
+                    this.y -= this.velocityY;
+                    this.direction = prevDirection;
+                    updateVelocity();
+                }
+            }
+
         }
         void updateVelocity(){
             if(this.direction == 'U'){
                 this.velocityX = 0;
-                this.getVelocityY = -tileSize/4;
+                this.velocityY = -tileSize/4;
             }
             else if (this.direction == 'D') {
                 this.velocityX = 0;
-                this.getVelocityY = tileSize/4;
+                this.velocityY = tileSize/4;
             }
             else if (this.direction == 'L') {
                 this.velocityX = -tileSize/4;
-                this.getVelocityY = 0;
+                this.velocityY = 0;
             }
             else if (this.direction == 'R') {
                 this.velocityX = tileSize/4;
-                this.getVelocityY = 0;
+                this.velocityY = 0;
             }
 
         }
     }
     private int rowCount = 21;
     private int columnCount = 19;
-    private int tileSize = 30;
+    private int tileSize = 28;
     private int Width = columnCount * tileSize;
     private int Height = rowCount * tileSize;
 
@@ -168,7 +180,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                     Block ghost = new Block(redGhost,x,y,tileSize,tileSize);
                     ghosts.add(ghost);
                 } else if (tileMapChar == 'P') {
-                    pacman = new Block(pacmanRight,x,y,tileSize,tileSize);
+                    pacman = new Block(pacmanRight,x,y,tileSize-4,tileSize-4);
                 } else if (tileMapChar == ' ') {
                     Block food = new Block(null,x+14,y+14,4,4);
                     foods.add(food);
@@ -195,10 +207,33 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
              g.fillRect(food.x,food.y,food.width,food.height);
          }
      }
+
+     public void move(){
+        pacman.x += pacman.velocityX;
+        pacman.y += pacman.velocityY;
+
+        //check wall collisions
+         for (Block wall : walls){
+             if(collision(pacman, wall)){
+                 pacman.x -=pacman.velocityX;
+                 pacman.y -= pacman.velocityY;
+                 break;
+             }
+         }
+     }
+
+     public boolean collision(Block a, Block b){
+        return a.x < b.x + b.width &&
+                a.x + a.width > b.x &&
+                a.y < b.y + b.height &&
+                a.y + a.height > b.y;
+     }
+
      @Override
     public void actionPerformed(ActionEvent e){ // // গেম আপডেট বা repaint করার জন্য ব্যবহার হয়
+        move();
         repaint();
-     }
+    }
 
     @Override
     public void keyTyped(KeyEvent e) {}
@@ -222,7 +257,5 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             pacman.updateDirection('R');
         }
     }
-
-
 
 }
