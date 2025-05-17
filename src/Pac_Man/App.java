@@ -19,6 +19,7 @@ public class App {
         PacMan pacmanGame = new PacMan();
         window.add(pacmanGame);
         window.pack();
+        pacmanGame.requestFocus();
         window.setVisible(true);
     }
 }

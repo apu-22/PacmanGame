@@ -1,11 +1,14 @@
 package Pac_Man;
 
+import java.awt.event.KeyListener;
+import java.awt.event.KeyEvent;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 import java.util.HashSet;
 import java.awt.event.*;
-public class PacMan extends JPanel {
+public class PacMan extends JPanel implements ActionListener, KeyListener {
 
     class Block{
         int x;
@@ -16,6 +19,9 @@ public class PacMan extends JPanel {
 
         int startX;
         int startY;
+        char direction = 'U';
+        int velocityX=0;
+        int getVelocityY=0;
 
         Block(Image image, int x,int y,int width,int height){
             this.x=x;
@@ -26,6 +32,30 @@ public class PacMan extends JPanel {
 
             this.startX=x;
             this.startY=y;
+
+        }
+        void updateDirection(char direction){
+            this.direction=direction;
+            updateVelocity();
+        }
+        void updateVelocity(){
+            if(this.direction == 'U'){
+                this.velocityX = 0;
+                this.getVelocityY = -tileSize/4;
+            }
+            else if (this.direction == 'D') {
+                this.velocityX = 0;
+                this.getVelocityY = tileSize/4;
+            }
+            else if (this.direction == 'L') {
+                this.velocityX = -tileSize/4;
+                this.getVelocityY = 0;
+            }
+            else if (this.direction == 'R') {
+                this.velocityX = tileSize/4;
+                this.getVelocityY = 0;
+            }
+
         }
     }
     private int rowCount = 21;
@@ -77,10 +107,15 @@ public class PacMan extends JPanel {
     HashSet<Block> ghosts;
     Block pacman;
 
+    Timer gameLoap;
+
 
     public PacMan() {
         setPreferredSize(new Dimension(Width,Height));
         setBackground(Color.BLACK);
+
+        addKeyListener(this);
+        setFocusable(true);
 
         // Load images using ImageLoader
         wallImage = ImageLoader.load("/picture/wall.png");
@@ -95,7 +130,9 @@ public class PacMan extends JPanel {
         pacmanLeft = ImageLoader.load("/picture/pacmanLeft.png");
 
         loadMap();
-
+        //how long it takes to start. milliseconds gone between frames
+        gameLoap = new Timer(50,this);
+        gameLoap.start();
     }
 
     public void loadMap(){
@@ -158,4 +195,34 @@ public class PacMan extends JPanel {
              g.fillRect(food.x,food.y,food.width,food.height);
          }
      }
+     @Override
+    public void actionPerformed(ActionEvent e){ // // গেম আপডেট বা repaint করার জন্য ব্যবহার হয়
+        repaint();
+     }
+
+    @Override
+    public void keyTyped(KeyEvent e) {}
+
+    @Override
+    public void keyPressed(KeyEvent e) {}
+
+    @Override
+    public void keyReleased(KeyEvent e) {
+//        System.out.println("KeyEvent: " + e.getKeyCode());
+        if(e.getKeyCode() == KeyEvent.VK_UP){
+            pacman.updateDirection('U');
+        }
+        if(e.getKeyCode() == KeyEvent.VK_DOWN){
+            pacman.updateDirection('D');
+        }
+        if(e.getKeyCode() == KeyEvent.VK_LEFT){
+            pacman.updateDirection('L');
+        }
+        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+            pacman.updateDirection('R');
+        }
+    }
+
+
+
 }
