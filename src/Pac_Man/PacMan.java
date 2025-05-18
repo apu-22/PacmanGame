@@ -242,10 +242,38 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
          }
 
          //score & lives
-         g.setFont(new Font("Arial", Font.PLAIN, 18));
-         if (gameOver){
-             g.drawString("Game Over: " + String.valueOf(score), tileSize/2, tileSize/2);
+//         g.setFont(new Font("Arial", Font.PLAIN, 18));
+
+         if (gameOver) {
+             String gameOverText = "Game Over";
+             String finalScoreText = "Final Score: " + score;
+             String restartText = "Press any key to restart the game";
+
+             // Game Over font
+             Font font = new Font("Arial", Font.BOLD, 28);
+             g.setFont(font);
+             g.setColor(Color.RED);
+             FontMetrics fm1 = g.getFontMetrics(font);
+
+             int centerX = Width / 2;
+             int centerY = Height / 2;
+
+             int gameOverWidth = fm1.stringWidth(gameOverText);
+             g.drawString(gameOverText, centerX - gameOverWidth / 2, centerY - 10);
+
+             int scoreWidth = fm1.stringWidth(finalScoreText);
+             g.drawString(finalScoreText, centerX - scoreWidth / 2, centerY + 30);
+
+             // Restart text font
+             Font restartFont = new Font("Courier New", Font.BOLD, 18);
+             g.setFont(restartFont);
+             g.setColor(Color.YELLOW);
+             FontMetrics fm2 = g.getFontMetrics(restartFont);
+
+             int restartWidth = fm2.stringWidth(restartText);
+             g.drawString(restartText, centerX - restartWidth / 2, centerY + 60);
          }
+
          else {
              g.drawString("x" + String.valueOf(lives) + "Score: " +String.valueOf(score), tileSize/2, tileSize/2);
          }
