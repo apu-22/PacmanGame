@@ -10,7 +10,7 @@ public class App {
         int Width=columnCount*tilesize;
         int Height=rowConut*tilesize;
 
-//        // 🔊 Start background music
+//      Start background music
         SoundLoader bgMusic = new SoundLoader("/sound/pacman_beginning.wav");
         bgMusic.playLoop();
 
@@ -20,7 +20,8 @@ public class App {
         window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        PacMan pacmanGame = new PacMan();
+        PacMan pacmanGame = new PacMan(bgMusic);
+
         window.add(pacmanGame);
         window.pack();
         pacmanGame.requestFocus();
