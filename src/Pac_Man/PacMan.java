@@ -253,7 +253,13 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         pacman.x += pacman.velocityX;
         pacman.y += pacman.velocityY;
 
-        //check wall collisions
+        if (pacman.x < -pacman.width){
+            pacman.x = Width;
+        } else if (pacman.x > Width) {
+            pacman.x = -pacman.width;
+        }
+
+         //check wall collisions
          for (Block wall : walls){
              if(collision(pacman, wall)){
                  pacman.x -=pacman.velocityX;
@@ -281,8 +287,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
              if (ghost.y == tileSize*9 && ghost.direction != 'U' && ghost.direction != 'D'){
                  ghost.updateDirection('U');
              }
+
              ghost.x += ghost.velocityX;
              ghost.y += ghost.velocityY;
+
              for (Block wall : walls){
                  if (collision(ghost, wall) || ghost.x <= 0 || ghost.x + ghost.width >= Width){
                      ghost.x -= ghost.velocityX;
@@ -302,6 +310,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                  SoundLoader.play("/sound/pacman_eatDots.wav");
              }
          }
+
          foods.remove(foodEaten);
          if (foods.isEmpty()){
              loadMap();
