@@ -142,14 +142,19 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     int score = 0;
     int lives = 3;
     boolean gameOver = false;
-
-
-    public PacMan() {
+    private SoundLoader bgMusic;
+//
+//    public PacMan(SoundLoader bgMusic) {
+//        this.bgMusic = bgMusic;
+//        // your existing constructor code...
+//    }
+    public PacMan(SoundLoader bgMusic) {
         setPreferredSize(new Dimension(Width,Height));
         setBackground(Color.BLACK);
 
         addKeyListener(this);
         setFocusable(true);
+        this.bgMusic = bgMusic;
 
         // Load images using ImageLoader
         wallImage = ImageLoader.load("/picture/wall.png");
@@ -210,7 +215,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                     Block ghost = new Block(redGhost,x,y,tileSize,tileSize);
                     ghosts.add(ghost);
                 } else if (tileMapChar == 'P') {
-                    pacman = new Block(pacmanRight,x,y,tileSize-4,tileSize-4);
+                    pacman = new Block(pacmanRight,x,y,tileSize,tileSize);
                 } else if (tileMapChar == ' ') {
                     Block food = new Block(null,x+14,y+14,4,4);
                     foods.add(food);
@@ -337,6 +342,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                  if (lives == 0){
                      SoundLoader.play("/sound/pacman_death.wav");
                      gameOver = true;
+                     bgMusic.stop();
                      return;
                  } else {
                      SoundLoader.play("/sound/pacman_collisionGhost.wav");
@@ -456,6 +462,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             score = 0;
             gameOver = false;
             gameLoap.start();
+            bgMusic.playLoop();
         }
 
         if (e.getKeyCode() == KeyEvent.VK_UP) {
