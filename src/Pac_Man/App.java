@@ -10,6 +10,10 @@ public class App {
         int Width=columnCount*tilesize;
         int Height=rowConut*tilesize;
 
+        // 🔊 Start background music
+        SoundLoader music = new SoundLoader("/sound/pacman_beginning.wav");
+        music.playLoop();
+
         JFrame window = new JFrame("Pac Man");
         window.setSize(Width,Height);
         window.setLocationRelativeTo(null);
