@@ -95,7 +95,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
 
     Block bonusFruit = null;
     long lastBonusSpawnTime = System.currentTimeMillis();
-    int bonusInterval = 10000;
+    int bonusInterval = 7000;
 
 
     //X = wall, O = skip, P = pac man, ' ' = food
@@ -309,10 +309,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
          if (bonusFruit != null && collision(pacman, bonusFruit)) {
              score += 50;
              bonusFruit = null;
-//             SoundLoader.play("/sound/pacman_eatBonus.wav"); // optional sound
+             SoundLoader.play("/sound/pacman_eatFruit.wav"); // optional sound
          }
 
-         // BONUS fruit spawn every 5 sec
+         // BONUS fruit spawn every 7 sec
          if (System.currentTimeMillis() - lastBonusSpawnTime >= bonusInterval) {
              spawnBonusFruit();
              lastBonusSpawnTime = System.currentTimeMillis();
