@@ -277,6 +277,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
              if (collision(pacman, food)){
                  foodEaten = food;
                  score += 10;
+                 SoundLoader.play("/sound/pacman_eatDots.wav");
              }
          }
          foods.remove(foodEaten);
