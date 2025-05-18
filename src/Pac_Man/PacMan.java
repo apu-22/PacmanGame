@@ -91,6 +91,12 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     private Image pacmanDown;
     private Image pacmanRight;
     private Image pacmanLeft;
+    private Image bonusFruitImage;
+
+    Block bonusFruit = null;
+    long lastBonusSpawnTime = System.currentTimeMillis();
+    int bonusInterval = 10000;
+
 
     //X = wall, O = skip, P = pac man, ' ' = food
     //Ghosts: b = blue, o = orange, p = pink, r = red
@@ -152,6 +158,9 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         pacmanRight = ImageLoader.load("/picture/pacmanRight.png");
         pacmanLeft = ImageLoader.load("/picture/pacmanLeft.png");
 
+        bonusFruitImage = ImageLoader.load("/picture/bonusFruit.png");
+
+
         loadMap();
         for(Block ghost : ghosts){
             char newDirection = direction[random.nextInt(4)];
@@ -166,6 +175,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
         walls = new HashSet<Block>();
         foods = new HashSet<Block>();
         ghosts = new HashSet<Block>();
+        bonusFruit = null;
 
         for(int r=0;r<rowCount;r++){
             for(int c=0;c<columnCount;c++){
@@ -220,6 +230,10 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
          g.setColor(Color.WHITE);
          for(Block food : foods){
              g.fillRect(food.x,food.y,food.width,food.height);
+         }
+
+         if (bonusFruit != null) {
+             g.drawImage(bonusFruit.image, bonusFruit.x, bonusFruit.y, bonusFruit.width, bonusFruit.height, null);
          }
 
          //score & lives
@@ -290,6 +304,21 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
              loadMap();
              resetPosition();
          }
+
+         //check bonus food collision
+         if (bonusFruit != null && collision(pacman, bonusFruit)) {
+             score += 50;
+             bonusFruit = null;
+//             SoundLoader.play("/sound/pacman_eatBonus.wav"); // optional sound
+         }
+
+         // BONUS fruit spawn every 5 sec
+         if (System.currentTimeMillis() - lastBonusSpawnTime >= bonusInterval) {
+             spawnBonusFruit();
+             lastBonusSpawnTime = System.currentTimeMillis();
+         }
+
+
      }
 
      public boolean collision(Block a, Block b){
@@ -299,7 +328,23 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
                 a.y + a.height > b.y;
      }
 
-     @Override
+    public void spawnBonusFruit() {
+        if (bonusFruit != null || foods.isEmpty()) return; // Already exists or no place to spawn
+
+        int index = random.nextInt(foods.size());
+        int i = 0;
+        for (Block food : foods) {
+            if (i == index) {
+                bonusFruit = new Block(bonusFruitImage, food.x - 14, food.y - 14, tileSize - 8, tileSize - 8);
+                foods.remove(food);
+                break;
+            }
+            i++;
+        }
+    }
+
+
+    @Override
     public void actionPerformed(ActionEvent e){ // // গেম আপডেট বা repaint করার জন্য ব্যবহার হয়
         move();
         repaint();
