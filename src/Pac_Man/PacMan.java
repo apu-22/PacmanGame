@@ -96,6 +96,9 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     Block bonusFruit = null;
     long lastBonusSpawnTime = System.currentTimeMillis();
     int bonusInterval = 7000;
+    long bonusAppearTime = 0;
+    int bonusVisibleDuration = 5000;
+
 
 
     //X = wall, O = skip, P = pac man, ' ' = food
@@ -318,6 +321,9 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
              lastBonusSpawnTime = System.currentTimeMillis();
          }
 
+         if (bonusFruit != null && System.currentTimeMillis() - bonusAppearTime >= bonusVisibleDuration){
+             bonusFruit = null;
+         }
 
      }
 
@@ -337,6 +343,7 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             if (i == index) {
                 bonusFruit = new Block(bonusFruitImage, food.x - 14, food.y - 14, tileSize - 8, tileSize - 8);
                 foods.remove(food);
+                bonusAppearTime = System.currentTimeMillis();
                 break;
             }
             i++;
