@@ -80,6 +80,8 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
     private int tileSize = 28;
     private int Width = columnCount * tileSize;
     private int Height = rowCount * tileSize;
+    char nextDirection = ' '; // default: no direction
+
 
     private Image wallImage;
     private Image blueGhost;
@@ -250,14 +252,45 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
      }
 
      public void move(){
-        pacman.x += pacman.velocityX;
-        pacman.y += pacman.velocityY;
+         if (nextDirection != pacman.direction) {
+             // Try temporarily changing direction
+             char originalDirection = pacman.direction;
+             int originalX = pacman.x;
+             int originalY = pacman.y;
 
-        if (pacman.x < -pacman.width){
+             pacman.updateDirection(nextDirection);
+             pacman.x += pacman.velocityX;
+             pacman.y += pacman.velocityY;
+
+             boolean canMove = true;
+             for (Block wall : walls) {
+                 if (collision(pacman, wall)) {
+                     canMove = false;
+                     break;
+                 }
+             }
+
+             // Revert back for now
+             pacman.x = originalX;
+             pacman.y = originalY;
+
+             if (canMove) {
+                 // Apply new direction if no collision
+                 pacman.updateDirection(nextDirection);
+             } else {
+                 // Else keep going in old direction
+                 pacman.updateDirection(originalDirection);
+             }
+         }
+
+         pacman.x += pacman.velocityX;
+         pacman.y += pacman.velocityY;
+
+         if (pacman.x < -pacman.width){
             pacman.x = Width;
-        } else if (pacman.x > Width) {
+         } else if (pacman.x > Width) {
             pacman.x = -pacman.width;
-        }
+         }
 
          //check wall collisions
          for (Block wall : walls){
@@ -396,31 +429,31 @@ public class PacMan extends JPanel implements ActionListener, KeyListener {
             gameOver = false;
             gameLoap.start();
         }
-        if(e.getKeyCode() == KeyEvent.VK_UP){
-            pacman.updateDirection('U');
-        }
-        if(e.getKeyCode() == KeyEvent.VK_DOWN){
-            pacman.updateDirection('D');
-        }
-        if(e.getKeyCode() == KeyEvent.VK_LEFT){
-            pacman.updateDirection('L');
-        }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT){
-            pacman.updateDirection('R');
+
+        if (e.getKeyCode() == KeyEvent.VK_UP) {
+            nextDirection = 'U';
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            nextDirection = 'D';
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            nextDirection = 'L';
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            nextDirection = 'R';
         }
 
         if(pacman.direction == 'U'){
             pacman.image = pacmanUp;
         }
-        else if(pacman.direction == 'D'){
+
+        if (nextDirection == 'U') {
+            pacman.image = pacmanUp;
+        } else if (nextDirection == 'D') {
             pacman.image = pacmanDown;
-        }
-        else if(pacman.direction == 'R'){
+        } else if (nextDirection == 'L') {
+            pacman.image = pacmanLeft;
+        } else if (nextDirection == 'R') {
             pacman.image = pacmanRight;
         }
-        else if(pacman.direction == 'L'){
-            pacman.image = pacmanLeft;
-        }
+
     }
 
 }
