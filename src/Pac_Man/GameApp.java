@@ -2,11 +2,11 @@ package Pac_Man;
 
 import javax.swing.JFrame;
 
-public class App {
+public class GameApp {
     public static void main(String[] args){
-        int rowConut=20;
+        int rowConut=21;
         int columnCount=19;
-        int tilesize= 32;
+        int tilesize= 28;
         int Width=columnCount*tilesize;
         int Height=rowConut*tilesize;
 
